@@ -12,7 +12,17 @@ void main() {
 class CounterStorage {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+    if (Platform.isAndroid || Platform.isIOS) {
+      return directory.path;
+    }
+
+    var readerDirectory = Directory(directory.path + '/quran_reader');
+    var isThere = readerDirectory.existsSync();
+    if (!isThere) {
+      readerDirectory.createSync();
+    }
+
+    return readerDirectory.path;
   }
 
   Future<File> get _localFile async {
