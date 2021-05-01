@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(MyApp());
@@ -163,6 +164,14 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            ElevatedButton(
+              child: Text('Show Matrial Dialog'),
+              onPressed: _showMaterialDialog,
+            ),
+            ElevatedButton(
+              child: Text('Show Cupertino Dialog'),
+              onPressed: _showCupertinoDialog,
+            ),
           ],
         ),
       ),
@@ -172,5 +181,39 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  _showMaterialDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => new AlertDialog(
+              title: new Text("Material Dialog"),
+              content: new Text("Hey! I'm Coflutter!"),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Close me!'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
+  }
+
+  _showCupertinoDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => new CupertinoAlertDialog(
+              title: new Text("Cupertino Dialog"),
+              content: new Text("Hey! I'm Coflutter!"),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Close me!'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
   }
 }
