@@ -5,6 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:quran_reader/storage/chapter_storage.dart';
+import 'package:quran_reader/widgets/chapter_list.dart';
+
+import 'api_client.dart';
 
 void main() {
   runApp(MyApp());
@@ -172,6 +177,20 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Show Cupertino Dialog'),
               onPressed: _showCupertinoDialog,
             ),
+            ElevatedButton(
+                child: Text('Download Chapter List'),
+                onPressed: () async {
+                  await fetchChapterList(http.Client());
+                }),
+            ElevatedButton(
+                child: Text('Show Chapter List'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ChapterList(storage: ChapterStorage())));
+                }),
           ],
         ),
       ),
