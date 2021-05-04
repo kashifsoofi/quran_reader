@@ -5,51 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:quran_reader/storage/chapter_storage.dart';
+import 'package:quran_reader/widgets/chapter_list.dart';
+
+import 'api_client.dart';
 
 void main() {
   runApp(MyApp());
-}
-
-class CounterStorage {
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    if (Platform.isAndroid || Platform.isIOS) {
-      return directory.path;
-    }
-
-    var readerDirectory = Directory(directory.path + '/quran_reader');
-    var isThere = readerDirectory.existsSync();
-    if (!isThere) {
-      readerDirectory.createSync();
-    }
-
-    return readerDirectory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/counter.txt');
-  }
-
-  Future<int> readCounter() async {
-    try {
-      final file = await _localFile;
-
-      // Read the file
-      String contents = await file.readAsString();
-      return int.parse(contents);
-    } catch (e) {
-      // If encountering an error, return 0
-      return 0;
-    }
-  }
-
-  Future<File> writeCounter(int counter) async {
-    final file = await _localFile;
-
-    // Write the file
-    return file.writeAsString('$counter');
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -71,14 +34,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(
-          title: 'Flutter Demo Home Page', storage: CounterStorage()),
+        title: 'Flutter Demo Home Page',
+        storage: ChapterStorage(),
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  final CounterStorage storage;
-
   MyHomePage({Key? key, this.title, required this.storage}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -91,6 +54,7 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String? title;
+  final ChapterStorage storage;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -102,14 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    widget.storage.readCounter().then((int value) {
-      setState(() {
-        _counter = value;
-      });
-    });
   }
 
-  Future<File> _incrementCounter() {
+  void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -118,9 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
 
-    // Write the variable as a string to the file.
-    return widget.storage.writeCounter(_counter);
+  Future<File> _fetchChapterList() async {
+    String content = await fetchChapterList(http.Client());
+    return widget.storage.writeChapterList(content);
   }
 
   @override
@@ -172,6 +133,20 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Show Cupertino Dialog'),
               onPressed: _showCupertinoDialog,
             ),
+            ElevatedButton(
+                child: Text('Download Chapter List'),
+                onPressed: () async {
+                  await _fetchChapterList();
+                }),
+            ElevatedButton(
+                child: Text('Show Chapter List'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ChapterList(storage: ChapterStorage())));
+                }),
           ],
         ),
       ),
