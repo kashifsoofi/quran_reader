@@ -41,16 +41,16 @@ class ChapterStorage {
     }
   }
 
-  List<Chapter> parseChapterList(String content) {
-    final parsed = jsonDecode(content).cast<Map<String, dynamic>>();
-
-    return parsed.map<Chapter>((json) => Chapter.fromJson(json)).toList();
-  }
-
   Future<File> writeChapterList(String content) async {
     final file = await _localListFile;
 
     // Write the file
     return file.writeAsString(content);
   }
+}
+
+List<Chapter> parseChapterList(String content) {
+  var chaptersJson = jsonDecode(content)['chapters'] as List;
+
+  return chaptersJson.map((json) => Chapter.fromJson(json)).toList();
 }

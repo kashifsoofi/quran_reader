@@ -9,12 +9,6 @@ class ChapterList extends StatefulWidget {
   ChapterList({required this.storage});
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-
-  @override
   _ChapterListState createState() => _ChapterListState();
 }
 
@@ -44,7 +38,9 @@ class _ChapterListState extends State<ChapterList> {
 
   ListTile _buildItemForListView(BuildContext context, int index) {
     return ListTile(
-      title: Text(_chapters[index].nameComplex, style: TextStyle(fontSize: 18)),
+      title: Text(
+          '${_chapters[index].nameComplex} - ${_chapters[index].nameArabic}',
+          style: TextStyle(fontSize: 18)),
       subtitle:
           Text(_chapters[index].nameSimple, style: TextStyle(fontSize: 14)),
     );

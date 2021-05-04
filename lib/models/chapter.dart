@@ -20,17 +20,17 @@ class Chapter {
       required this.versesCount,
       required this.translatedName});
 
-  factory Chapter.fromJson(Map<String, dynamic> json) {
+  factory Chapter.fromJson(dynamic json) {
     return Chapter(
         id: json['id'] as int,
-        chapterNumber: json['chapter_name'] as int,
+        chapterNumber: json['chapter_number'] as int,
         revelationOrder: json['revelation_order'] as int,
         revelationPlace: json['revelation_place'] as String,
         nameComplex: json['name_complex'] as String,
         nameArabic: json['name_arabic'] as String,
         nameSimple: json['name_simple'] as String,
         versesCount: json['verses_count'] as int,
-        translatedName: TranslatedName.fromJson(json));
+        translatedName: TranslatedName.fromJson(json['translated_name']));
   }
 }
 
@@ -40,7 +40,7 @@ class TranslatedName {
 
   TranslatedName({required this.languageName, required this.name});
 
-  factory TranslatedName.fromJson(Map<String, dynamic> json) {
+  factory TranslatedName.fromJson(dynamic json) {
     return TranslatedName(
         languageName: json['language_name'] as String,
         name: json['name'] as String);
